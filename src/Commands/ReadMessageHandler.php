@@ -50,6 +50,11 @@ class ReadMessageHandler
 
         $actor->decrement('unread_messages', $number - $oldRead);
 
+        if ($actor->unread_messages < 0) {
+            $actor->unread_messages = 0;
+            $actor->save();
+        }
+
         foreach (ConversationUser::where('conversation_id', $conversation->id)->pluck('user_id')->all() as $userId) {
             if (intval($userId) !== intval($actor->id)) {
                 $this->pushNewRead($userId, $number, $conversation->id, $actor->id);
