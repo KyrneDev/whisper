@@ -24,6 +24,6 @@ return [
 
 
     'down' => function (Builder $schema) {
-        $schema->dropIfExists('whisper.conversations');
+        $schema->dropIfExists('conversations');
     }
 ];
