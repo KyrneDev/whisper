@@ -1,13 +1,13 @@
-import Component from 'flarum/Component';
-import Button from 'flarum/components/Button';
-import avatar from 'flarum/helpers/avatar';
-import username from 'flarum/helpers/username';
-import humanTime from 'flarum/helpers/humanTime';
-import LoadingIndicator from 'flarum/components/LoadingIndicator';
+import Component from 'flarum/common/Component';
+import Button from 'flarum/common/components/Button';
+import avatar from 'flarum/common/helpers/avatar';
+import username from 'flarum/common/helpers/username';
+import humanTime from 'flarum/common/helpers/humanTime';
+import LoadingIndicator from 'flarum/common/components/LoadingIndicator';
 import MessageText from './MessageText';
-import Stream from 'flarum/utils/Stream';
-import withAttr from 'flarum/utils/withAttr';
-import icon from 'flarum/helpers/icon';
+import Stream from 'flarum/common/utils/Stream';
+import withAttr from 'flarum/common/utils/withAttr';
+import icon from 'flarum/common/helpers/icon';
 
 export default class ConversationView extends Component {
   oninit(vnode) {

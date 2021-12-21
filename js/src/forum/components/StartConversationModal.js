@@ -1,9 +1,9 @@
-import Modal from 'flarum/components/Modal';
-import Button from 'flarum/components/Button';
+import Modal from 'flarum/common/components/Modal';
+import Button from 'flarum/common/components/Button';
 import RecipientSearch from './RecipientSearch';
-import username from 'flarum/helpers/username';
-import Stream from 'flarum/utils/Stream';
-import withAttr from 'flarum/utils/withAttr';
+import username from 'flarum/common/helpers/username';
+import Stream from 'flarum/common/utils/Stream';
+import withAttr from 'flarum/common/utils/withAttr';
 
 export default class StartConversationModal extends Modal {
   oninit(vnode) {

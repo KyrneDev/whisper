@@ -1,12 +1,12 @@
-import Search from 'flarum/components/Search';
+import Search from 'flarum/forum/components/Search';
 import UserSearchSource from './UserSearchSource';
-import ItemList from 'flarum/utils/ItemList';
-import classList from 'flarum/utils/classList';
-import extractText from 'flarum/utils/extractText';
-import LoadingIndicator from 'flarum/components/LoadingIndicator';
+import ItemList from 'flarum/common/utils/ItemList';
+import classList from 'flarum/common/utils/classList';
+import extractText from 'flarum/common/utils/extractText';
+import LoadingIndicator from 'flarum/common/components/LoadingIndicator';
 import recipientLabel from './recipientLabel';
-import Stream from 'flarum/utils/Stream';
-import withAttr from 'flarum/utils/withAttr';
+import Stream from 'flarum/common/utils/Stream';
+import withAttr from 'flarum/common/utils/withAttr';
 
 export default class RecipientSearch extends Search {
   oninit(attrs) {

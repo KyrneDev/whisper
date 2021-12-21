@@ -1,7 +1,7 @@
-import Component from 'flarum/Component';
-import avatar from 'flarum/helpers/avatar';
-import username from 'flarum/helpers/username';
-import userOnline from 'flarum/helpers/userOnline';
+import Component from 'flarum/common/Component';
+import avatar from 'flarum/common/helpers/avatar';
+import username from 'flarum/common/helpers/username';
+import userOnline from 'flarum/common/helpers/userOnline';
 
 export default class UserListItem extends Component {
   oninit(vnode) {

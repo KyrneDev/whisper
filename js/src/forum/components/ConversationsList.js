@@ -1,5 +1,5 @@
-import Button from 'flarum/components/Button';
-import Component from 'flarum/Component';
+import Button from 'flarum/common/components/Button';
+import Component from 'flarum/common/Component';
 import ConversationView from './ConversationView';
 import UserListItem from './UserListItem';
 import StartConversationModal from './StartConversationModal';

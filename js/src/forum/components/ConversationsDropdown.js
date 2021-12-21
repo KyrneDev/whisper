@@ -1,4 +1,4 @@
-import NotificationsDropdown from 'flarum/components/NotificationsDropdown';
+import NotificationsDropdown from 'flarum/forum/components/NotificationsDropdown';
 
 import ConversationsList from './ConversationsList';
 
