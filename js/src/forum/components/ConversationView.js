@@ -349,9 +349,15 @@ export default class ConversationView extends Component {
               })
               .then((response) => {
                 const newNumber = response.data.attributes.lastRead;
+                let unreadMessages = 0;
+                const lastUnreadMessage = app.session.user.unreadMessages();
+
+                if (lastUnreadMessage !== 0) unmsg = lastUnreadMessage - (newNumber - oldNumber);
+
                 app.session.user.pushAttributes({
-                  unreadMessages: app.session.user.unreadMessages() - (newNumber - oldNumber),
+                  unreadMessages,
                 });
+
                 m.redraw();
                 this.firstLoad = false;
               });
