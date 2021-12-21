@@ -19,8 +19,8 @@
         }
     ],
     "support": {
-        "issues": "https://github.com/kyrne/whisper-public/issues",
-        "source": "https://github.com/kyrne/whisper-public",
+        "issues": "https://github.com/KyrneDev/whisper/issues",
+        "source": "https://github.com/KyrneDev/whisper",
         "forum":  "https://discuss.flarum.org/d/24073-whisper-private-messaging-for-flarum"
     },
     "require": {
