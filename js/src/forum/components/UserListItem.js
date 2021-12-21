@@ -30,18 +30,22 @@ export default class UserListItem extends Component {
     };
 
     interval2();
+
+    super.oncreate(vnode);
   }
 
-  onremove() {
+  onremove(vnode) {
     if (app.pusher) {
       app.pusher.then((object) => {
         const channels = object.channels;
         channels.user.unbind('typing');
       });
     }
+
+    super.onremove(vnode);
   }
 
-  oncreate() {
+  oncreate(vnode) {
     if (app.pusher) {
       app.pusher.then((object) => {
         const channels = object.channels;
@@ -54,31 +58,30 @@ export default class UserListItem extends Component {
         });
       });
     }
+
+    super.oncreate(vnode);
   }
 
-  view() {
-    if (this.loading) return;
+  view(vnode) {
+    if (this.loading || !this.user) return null;
+
+    const onclick = (e) => {
+      this.attrs.onclick(e);
+      this.active = this.conversation.id() === app.cache.conversations[$(e.currentTarget).attr('id')].id();
+    };
+
     return (
-      <li
-        id={this.index}
-        className={this.active ? 'UserListItem active' : 'UserListItem'}
-        onclick={(e) => {
-          this.attrs.onclick(e);
-          this.active = this.conversation.id() == app.cache.conversations[$(e.currentTarget).attr('id')].id();
-        }}
-      >
+      <li id={this.index} className={this.active ? 'UserListItem active' : 'UserListItem'} onclick={onclick}>
         <div className="UserListItem-content">
           {avatar(this.user)}
           <div className="info">
             {username(this.user)}
             {userOnline(this.user)}
           </div>
-          {this.typing ? (
+          {!!this.typing && (
             <div className="tiblock">
               <div className="tidot"></div>
             </div>
-          ) : (
-            ''
           )}
         </div>
       </li>
