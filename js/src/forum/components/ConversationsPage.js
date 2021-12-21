@@ -12,6 +12,10 @@ export default class ConversationsPage extends Page {
   }
 
   view() {
-    return <div className="ConversationsPage"><ConversationsList mobile={true}></ConversationsList></div>;
+    return (
+      <div className="ConversationsPage">
+        <ConversationsList mobile={true}></ConversationsList>
+      </div>
+    );
   }
 }

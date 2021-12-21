@@ -15,10 +15,8 @@ export default class MessageText extends Component {
     super.oncreate(vnode);
 
     if (this.attrs.preview) {
-
       let preview;
       const updatePreview = () => {
-
         const content = this.attrs.content;
 
         if (preview === content) return;

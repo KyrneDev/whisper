@@ -7,5 +7,5 @@ export default class ConversationUser extends mixin(Model, {
 
   userId: Model.attribute('userId'),
   conversationId: Model.attribute('conversationId'),
-  lastRead: Model.attribute('lastRead')
+  lastRead: Model.attribute('lastRead'),
 }) {}

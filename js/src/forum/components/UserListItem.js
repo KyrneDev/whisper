@@ -3,7 +3,6 @@ import avatar from 'flarum/helpers/avatar';
 import username from 'flarum/helpers/username';
 import userOnline from 'flarum/helpers/userOnline';
 
-
 export default class UserListItem extends Component {
   oninit(vnode) {
     this.conversation = vnode.attrs.conversation;
@@ -11,7 +10,7 @@ export default class UserListItem extends Component {
     this.active = vnode.attrs.active;
     this.loading = true;
 
-    this.conversation.recipients().map(recipient => {
+    this.conversation.recipients().map((recipient) => {
       if (parseInt(recipient.user().id()) !== parseInt(app.session.user.id())) {
         this.user = recipient.user();
         this.loading = false;
@@ -34,7 +33,7 @@ export default class UserListItem extends Component {
 
   onremove() {
     if (app.pusher) {
-      app.pusher.then(object => {
+      app.pusher.then((object) => {
         const channels = object.channels;
         channels.user.unbind('typing');
       });
@@ -42,25 +41,24 @@ export default class UserListItem extends Component {
   }
 
   onupdate() {
-    $('.UserListItem').on('click tap', ((e) => {
-        this.active = this.conversation.id() == app.cache.conversations[$(e.currentTarget).attr('id')].id();
-        m.redraw();
-    }));
-
+    $('.UserListItem').on('click tap', (e) => {
+      this.active = this.conversation.id() == app.cache.conversations[$(e.currentTarget).attr('id')].id();
+      m.redraw();
+    });
   }
 
   oncreate() {
     if (app.pusher) {
-      app.pusher.then(object => {
+      app.pusher.then((object) => {
         const channels = object.channels;
-        channels.user.bind('typing', data => {
+        channels.user.bind('typing', (data) => {
           if (parseInt(data.conversationId) === parseInt(this.conversation.id())) {
             this.typing = true;
             this.typingTime = new Date();
             m.redraw();
           }
-        })
-      })
+        });
+      });
     }
   }
 
@@ -74,14 +72,15 @@ export default class UserListItem extends Component {
             {username(this.user)}
             {userOnline(this.user)}
           </div>
-          {this.typing ?
+          {this.typing ? (
             <div className="tiblock">
               <div className="tidot"></div>
             </div>
-            : ''}
+          ) : (
+            ''
+          )}
         </div>
       </li>
-    )
+    );
   }
 }
-

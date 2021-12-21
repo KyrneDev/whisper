@@ -15,7 +15,6 @@ export default class ConversationsDropdown extends NotificationsDropdown {
     if (app.drawer.isOpen()) {
       this.goToRoute();
     }
-
   }
 
   getMenu() {
