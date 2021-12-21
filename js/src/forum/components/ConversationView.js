@@ -8,6 +8,7 @@ import MessageText from './MessageText';
 import Stream from 'flarum/common/utils/Stream';
 import withAttr from 'flarum/common/utils/withAttr';
 import icon from 'flarum/common/helpers/icon';
+import app from 'flarum/forum/app';
 
 export default class ConversationView extends Component {
   oninit(vnode) {
@@ -102,14 +103,16 @@ export default class ConversationView extends Component {
   }
 
   onbeforeupdate() {
-    $('.UserListItem').on('click', (e) => {
-      this.conversation = app.cache.conversations[$(e.currentTarget).attr('id')];
-      this.index = $(e.currentTarget).attr('id');
-      this.notNew = false;
-      this.cipher = null;
-      this.oninit(this.vnode);
-      m.redraw();
-    });
+    $('.UserListItem')
+      .off('click')
+      .on('click', (e) => {
+        this.conversation = app.cache.conversations[$(e.currentTarget).attr('id')];
+        this.index = $(e.currentTarget).attr('id');
+        this.notNew = false;
+        this.cipher = null;
+        this.oninit(this.vnode);
+        m.redraw();
+      });
 
     $('#MessageTextArea')
       .off()
@@ -217,7 +220,7 @@ export default class ConversationView extends Component {
                             <MessageText
                               content={message.message()}
                               className={'message ' + (myMessage ? 'my-message float-right' : 'other-message')}
-                            ></MessageText>
+                            />
                             {myMessage ? (
                               parseInt(this.recipient.lastRead()) >= parseInt(message.data.attributes.number) ? (
                                 <span className="message-read">{icon('fas fa-check')}</span>
@@ -233,11 +236,7 @@ export default class ConversationView extends Component {
                   : ''}
                 {this.messageContent() ? (
                   <li>
-                    <MessageText
-                      content={this.messageContent()}
-                      className={'message my-message float-right message-preview'}
-                      preview={true}
-                    ></MessageText>
+                    <MessageText content={this.messageContent()} className={'message my-message float-right message-preview'} preview={true} />
                   </li>
                 ) : (
                   ''

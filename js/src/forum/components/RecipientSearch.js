@@ -7,44 +7,12 @@ import LoadingIndicator from 'flarum/common/components/LoadingIndicator';
 import recipientLabel from './recipientLabel';
 import Stream from 'flarum/common/utils/Stream';
 import withAttr from 'flarum/common/utils/withAttr';
+import app from 'flarum/forum/app';
 
 export default class RecipientSearch extends Search {
   oninit(attrs) {
     this.value = Stream();
     super.oninit(attrs);
-  }
-
-  onupdate(vnode) {
-    const $search = this;
-
-    this.$('.Search-results').on('click', (e) => {
-      const target = this.$('.SearchResult.active');
-
-      $search.addRecipient(target.data('index'));
-      $search.$('.RecipientsInput').focus();
-    });
-
-    this.$('.Search-results').on('touchstart', (e) => {
-      const target = this.$(e.target.parentNode);
-
-      $search.addRecipient(target.data('index'));
-      $search.$('.RecipientsInput').focus();
-    });
-
-    $('.RecipientsInput')
-      .on('keyup', () => {
-        clearTimeout(this.typingTimer);
-        this.doSearch = false;
-        this.typingTimer = setTimeout(() => {
-          this.doSearch = true;
-          m.redraw();
-        }, 900);
-      })
-      .on('keydown', () => {
-        clearTimeout(this.typingTimer);
-      });
-
-    super.oncreate(vnode);
   }
 
   view() {
@@ -81,14 +49,28 @@ export default class RecipientSearch extends Search {
               oninput={withAttr('value', this.value)}
               onfocus={() => (this.hasFocus = true)}
               onblur={() => (this.hasFocus = false)}
+              onkeyup={() => {
+                clearTimeout(this.typingTimer);
+                this.doSearch = false;
+                this.typingTimer = setTimeout(() => {
+                  this.doSearch = true;
+                  m.redraw();
+                }, 900);
+              }}
+              onkeydown={() => {
+                clearTimeout(this.typingTimer);
+              }}
             />
             <ul
-              className={
-                'Dropdown-menu Search-results fade ' +
-                classList({
-                  in: !!loading,
-                })
-              }
+              className={classList('Dropdown-menu Search-results fade', {
+                in: !!loading,
+              })}
+              onclick={() => {
+                const target = this.$('.SearchResult.active');
+
+                this.addRecipient(target.data('index'));
+                this.$('.RecipientsInput').trigger('focus');
+              }}
             >
               {!this.doSearch
                 ? LoadingIndicator.component({ size: 'tiny', className: 'Button Button--icon Button--link' })

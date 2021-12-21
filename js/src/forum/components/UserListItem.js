@@ -2,6 +2,7 @@ import Component from 'flarum/common/Component';
 import avatar from 'flarum/common/helpers/avatar';
 import username from 'flarum/common/helpers/username';
 import userOnline from 'flarum/common/helpers/userOnline';
+import app from 'flarum/forum/app';
 
 export default class UserListItem extends Component {
   oninit(vnode) {
@@ -40,13 +41,6 @@ export default class UserListItem extends Component {
     }
   }
 
-  onupdate() {
-    $('.UserListItem').on('click tap', (e) => {
-      this.active = this.conversation.id() == app.cache.conversations[$(e.currentTarget).attr('id')].id();
-      m.redraw();
-    });
-  }
-
   oncreate() {
     if (app.pusher) {
       app.pusher.then((object) => {
@@ -65,7 +59,14 @@ export default class UserListItem extends Component {
   view() {
     if (this.loading) return;
     return (
-      <li id={this.index} className={this.active ? 'UserListItem active' : 'UserListItem'}>
+      <li
+        id={this.index}
+        className={this.active ? 'UserListItem active' : 'UserListItem'}
+        onclick={(e) => {
+          this.attrs.onclick(e);
+          this.active = this.conversation.id() == app.cache.conversations[$(e.currentTarget).attr('id')].id();
+        }}
+      >
         <div className="UserListItem-content">
           {avatar(this.user)}
           <div className="info">

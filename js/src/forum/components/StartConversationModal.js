@@ -4,6 +4,7 @@ import RecipientSearch from './RecipientSearch';
 import username from 'flarum/common/helpers/username';
 import Stream from 'flarum/common/utils/Stream';
 import withAttr from 'flarum/common/utils/withAttr';
+import app from 'flarum/forum/app';
 
 export default class StartConversationModal extends Modal {
   oninit(vnode) {
@@ -26,15 +27,9 @@ export default class StartConversationModal extends Modal {
     return 'StartConversationModal Modal--medium';
   }
 
-  onbeforeupdate() {
-    $('.Modal-content').on('click tap', (ev) => {
-      ev.stopImmediatePropagation();
-    });
-  }
-
   content() {
     return [
-      <div className="Modal-body">
+      <div className="Modal-body" onclick={(e) => e.stopImmediatePropagation()}>
         {this.already ? (
           [
             <h2>{app.translator.trans('kyrne-whisper.forum.modal.already', { username: username(this.recpient) })}</h2>,
@@ -48,7 +43,7 @@ export default class StartConversationModal extends Modal {
                 : app.translator.trans('kyrne-whisper.forum.modal.help')}
             </div>
             <div className="AddRecipientModal-form">
-              <RecipientSearch state={app.search}></RecipientSearch>
+              <RecipientSearch state={app.search} />
               {app.cache.conversationsRecipient !== null ? (
                 <div className="AddRecipientModal-form-submit">
                   <textarea
@@ -56,7 +51,7 @@ export default class StartConversationModal extends Modal {
                     oninput={withAttr('value', this.messageContent)}
                     placeholder={app.translator.trans('kyrne-whisper.forum.chat.text_placeholder')}
                     rows="3"
-                  ></textarea>
+                  />
                   {Button.component(
                     {
                       type: 'submit',

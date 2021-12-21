@@ -1,11 +1,12 @@
+import app from 'flarum/forum/app';
 import NotificationsDropdown from 'flarum/forum/components/NotificationsDropdown';
 
 import ConversationsList from './ConversationsList';
 
 export default class ConversationsDropdown extends NotificationsDropdown {
   static initAttrs(attrs) {
-    attrs.label = attrs.label || app.translator.trans('kyrne-whisper.forum.dropdown.tooltip');
-    attrs.icon = attrs.icon || 'fas fa-comment-alt';
+    attrs.label ||= attrs.label || app.translator.trans('kyrne-whisper.forum.dropdown.tooltip');
+    attrs.icon ||= 'fas fa-comment-alt';
     attrs.className = 'MessagesDropdown NotificationsDropdown';
 
     super.initAttrs(attrs);
@@ -20,7 +21,7 @@ export default class ConversationsDropdown extends NotificationsDropdown {
   getMenu() {
     return (
       <form className={'Dropdown-menu ' + this.attrs.menuClassName}>
-        {this.showing ? <ConversationsList mobile={false}></ConversationsList> : ''}
+        {!!this.showing && <ConversationsList mobile={false}/>}
       </form>
     );
   }

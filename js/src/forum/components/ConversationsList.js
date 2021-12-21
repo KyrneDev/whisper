@@ -3,6 +3,7 @@ import Component from 'flarum/common/Component';
 import ConversationView from './ConversationView';
 import UserListItem from './UserListItem';
 import StartConversationModal from './StartConversationModal';
+import app from 'flarum/forum/app';
 
 export default class ConversationsList extends Component {
   oninit(vnode) {
@@ -12,21 +13,12 @@ export default class ConversationsList extends Component {
     this.currentConversation = null;
   }
 
-  onupdate() {
-    $('.UserListItem').on('click tap', (e) => {
-      if (this.mobile) {
-        m.route(app.route('messages', { id: app.cache.conversations[$(e.currentTarget).attr('id')].id() }));
-      } else {
-        this.currentConversation = app.cache.conversations[$(e.currentTarget).attr('id')];
-        m.redraw();
-      }
-    });
-  }
+  onupdate() {}
 
   onbeforeupdate() {
-    let list = $('.ConversationsList-list');
+    const list = $('.ConversationsList-list');
 
-    list.scroll(() => {
+    list.off('scroll').on('scroll', () => {
       if (list.scrollTop() + list.innerHeight() >= list[0].scrollHeight) {
         this.loadMore();
       }
@@ -59,20 +51,31 @@ export default class ConversationsList extends Component {
                 ? app.translator.trans('kyrne-whisper.forum.chat.start')
                 : app.translator.trans('kyrne-whisper.forum.chat.cant_start')
             )}
-            {app.session.user.conversations().length ? (
+            {!!app.session.user.conversations().length && (
               <ul className="ConversationsList-list">
-                {conversations
-                  ? conversations.map((conversation, i) => {
-                      return UserListItem.component({ conversation, i, active: this.mobile ? false : this.currentConversation === conversation });
-                    })
-                  : ''}
+                {Array.isArray(conversations) &&
+                  conversations.map((conversation, i) => {
+                    return (
+                      <UserListItem
+                        conversation={conversation}
+                        i={i}
+                        active={this.mobile ? false : this.currentConversation === conversation}
+                        onclick={(e) => {
+                          if (this.mobile) {
+                            m.route(app.route('messages', { id: app.cache.conversations[$(e.currentTarget).attr('id')].id() }));
+                          } else {
+                            this.currentConversation = app.cache.conversations[$(e.currentTarget).attr('id')];
+                            m.redraw();
+                          }
+                        }}
+                      />
+                    );
+                  })}
               </ul>
-            ) : (
-              ''
             )}
           </div>
 
-          {!this.mobile ? this.conversationComponent : ''}
+          {!this.mobile && this.conversationComponent}
         </div>
       </div>
     );
