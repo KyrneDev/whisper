@@ -354,11 +354,14 @@ export default class ConversationView extends Component {
 
                 if (lastUnreadMessage !== 0) unmsg = lastUnreadMessage - (newNumber - oldNumber);
 
-                app.session.user.pushAttributes({
-                  unreadMessages,
-                });
+                if (unreadMessages >= 0) {
+                  app.session.user.pushAttributes({
+                    unreadMessages,
+                  });
 
-                m.redraw();
+                  m.redraw();
+                }
+
                 this.firstLoad = false;
               });
           }
