@@ -1,4 +1,4 @@
-import app from 'flarum/forum/app';
+import app from 'flarum/admin/app';
 
 app.initializers.add('kyrne-whisper', () => {
   app.extensionData
