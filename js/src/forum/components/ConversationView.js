@@ -352,7 +352,7 @@ export default class ConversationView extends Component {
                 let unreadMessages = 0;
                 const lastUnreadMessage = app.session.user.unreadMessages();
 
-                if (lastUnreadMessage !== 0) unmsg = lastUnreadMessage - (newNumber - oldNumber);
+                if (lastUnreadMessage !== 0) unreadMessages = lastUnreadMessage - (newNumber - oldNumber);
 
                 if (unreadMessages >= 0) {
                   app.session.user.pushAttributes({
