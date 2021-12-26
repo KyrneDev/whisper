@@ -15,6 +15,10 @@ export default class RecipientSearch extends Search {
     super.oninit(attrs);
   }
 
+  updateMaxHeight() {
+    // stub
+  }
+
   view() {
     if (typeof this.value() === 'undefined') {
       this.value('');
@@ -31,15 +35,12 @@ export default class RecipientSearch extends Search {
         {app.cache.conversationsRecipient === null ? (
           <div className="AddRecipientModal-form-input">
             <input
-              className={
-                'RecipientsInput FormControl ' +
-                classList({
-                  open: !!this.value(),
-                  focused: !!this.value(),
-                  active: !!this.value(),
-                  loading: !!this.loadingSources,
-                })
-              }
+              className={classList('RecipientsInput FormControl', {
+                open: !!this.value(),
+                focused: !!this.value(),
+                active: !!this.value(),
+                loading: !!this.loadingSources,
+              })}
               config={function (element) {
                 element.focus();
               }}
