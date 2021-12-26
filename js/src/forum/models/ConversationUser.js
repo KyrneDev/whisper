@@ -1,5 +1,5 @@
-import Model from 'flarum/Model';
-import mixin from 'flarum/utils/mixin';
+import Model from 'flarum/common/Model';
+import mixin from 'flarum/common/utils/mixin';
 
 export default class ConversationUser extends mixin(Model, {
   conversation: Model.hasOne('conversation'),
@@ -7,5 +7,5 @@ export default class ConversationUser extends mixin(Model, {
 
   userId: Model.attribute('userId'),
   conversationId: Model.attribute('conversationId'),
-  lastRead: Model.attribute('lastRead')
+  lastRead: Model.attribute('lastRead'),
 }) {}

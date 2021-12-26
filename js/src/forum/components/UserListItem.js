@@ -1,8 +1,8 @@
-import Component from 'flarum/Component';
-import avatar from 'flarum/helpers/avatar';
-import username from 'flarum/helpers/username';
-import userOnline from 'flarum/helpers/userOnline';
-
+import Component from 'flarum/common/Component';
+import avatar from 'flarum/common/helpers/avatar';
+import username from 'flarum/common/helpers/username';
+import userOnline from 'flarum/common/helpers/userOnline';
+import app from 'flarum/forum/app';
 
 export default class UserListItem extends Component {
   oninit(vnode) {
@@ -11,7 +11,7 @@ export default class UserListItem extends Component {
     this.active = vnode.attrs.active;
     this.loading = true;
 
-    this.conversation.recipients().map(recipient => {
+    this.conversation.recipients().map((recipient) => {
       if (parseInt(recipient.user().id()) !== parseInt(app.session.user.id())) {
         this.user = recipient.user();
         this.loading = false;
@@ -30,58 +30,61 @@ export default class UserListItem extends Component {
     };
 
     interval2();
+
+    super.oncreate(vnode);
   }
 
-  onremove() {
+  onremove(vnode) {
     if (app.pusher) {
-      app.pusher.then(object => {
+      app.pusher.then((object) => {
         const channels = object.channels;
         channels.user.unbind('typing');
       });
     }
+
+    super.onremove(vnode);
   }
 
-  onupdate() {
-    $('.UserListItem').on('click tap', ((e) => {
-        this.active = this.conversation.id() == app.cache.conversations[$(e.currentTarget).attr('id')].id();
-        m.redraw();
-    }));
-
-  }
-
-  oncreate() {
+  oncreate(vnode) {
     if (app.pusher) {
-      app.pusher.then(object => {
+      app.pusher.then((object) => {
         const channels = object.channels;
-        channels.user.bind('typing', data => {
+        channels.user.bind('typing', (data) => {
           if (parseInt(data.conversationId) === parseInt(this.conversation.id())) {
             this.typing = true;
             this.typingTime = new Date();
             m.redraw();
           }
-        })
-      })
+        });
+      });
     }
+
+    super.oncreate(vnode);
   }
 
-  view() {
-    if (this.loading) return;
+  view(vnode) {
+    if (this.loading || !this.user) return null;
+
+    const onclick = (e) => {
+      this.attrs.onclick(e);
+      this.active = this.conversation.id() === app.cache.conversations[$(e.currentTarget).attr('id')].id();
+    };
+
     return (
-      <li id={this.index} className={this.active ? 'UserListItem active' : 'UserListItem'}>
+      <li id={this.index} className={this.active ? 'UserListItem active' : 'UserListItem'} onclick={onclick}>
         <div className="UserListItem-content">
           {avatar(this.user)}
           <div className="info">
             {username(this.user)}
             {userOnline(this.user)}
           </div>
-          {this.typing ?
+          {!!this.typing && (
             <div className="tiblock">
               <div className="tidot"></div>
             </div>
-            : ''}
+          )}
         </div>
       </li>
-    )
+    );
   }
 }
-

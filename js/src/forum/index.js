@@ -1,16 +1,16 @@
-import app from 'flarum/app';
-import {extend} from 'flarum/extend';
-import IndexPage from 'flarum/components/IndexPage';
+import app from 'flarum/forum/app';
+import { extend } from 'flarum/common/extend';
+import IndexPage from 'flarum/forum/components/IndexPage';
 import Message from './models/Message';
 import Conversation from './models/Conversation';
 import ConversationUser from './models/ConversationUser';
-import User from 'flarum/models/User';
-import Model from 'flarum/Model';
+import User from 'flarum/common/models/User';
+import Model from 'flarum/common/Model';
 import ConversationsPage from './components/ConversationsPage';
 import ConversationViewPage from './components/ConversationViewPage';
-import Stream from 'flarum/utils/Stream';
+import Stream from 'flarum/common/utils/Stream';
 
-import addConversationsDropdown from './addConversationsDropdown'
+import addConversationsDropdown from './addConversationsDropdown';
 
 app.initializers.add('kyrne-whisper', function (app) {
   app.store.models.messages = Message;
@@ -25,28 +25,28 @@ app.initializers.add('kyrne-whisper', function (app) {
 
   addConversationsDropdown();
 
-  extend(IndexPage.prototype, 'oncreate', function() {
+  extend(IndexPage.prototype, 'oncreate', function () {
     if (app.pusher) {
-      app.pusher.then(object => {
+      app.pusher.then((object) => {
         const channels = object.channels;
         if (channels.user) {
-          channels.user.bind('newMessage', data => {
+          channels.user.bind('newMessage', (data) => {
             app.session.user.unreadMessages = Stream(app.session.user.unreadMessages() + 1);
             m.redraw();
           });
         }
       });
     }
-  })
+  });
 
-  extend(IndexPage.prototype, 'onremove', function() {
+  extend(IndexPage.prototype, 'onremove', function () {
     if (app.pusher) {
-      app.pusher.then(object => {
+      app.pusher.then((object) => {
         const channels = object.channels;
         if (channels.user) {
           channels.user.unbind('newMessage');
         }
       });
     }
-  })
+  });
 });

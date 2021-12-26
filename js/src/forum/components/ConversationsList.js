@@ -1,8 +1,9 @@
-import Button from 'flarum/components/Button';
-import Component from 'flarum/Component';
+import Button from 'flarum/common/components/Button';
+import Component from 'flarum/common/Component';
 import ConversationView from './ConversationView';
 import UserListItem from './UserListItem';
 import StartConversationModal from './StartConversationModal';
+import app from 'flarum/forum/app';
 
 export default class ConversationsList extends Component {
   oninit(vnode) {
@@ -12,25 +13,14 @@ export default class ConversationsList extends Component {
     this.currentConversation = null;
   }
 
-  onupdate() {
-    $('.UserListItem').on('click tap', ((e) => {
-      if (this.mobile) {
-        m.route(app.route('messages', {id: app.cache.conversations[$(e.currentTarget).attr('id')].id()}))
-      } else {
-        this.currentConversation = app.cache.conversations[$(e.currentTarget).attr('id')];
-        m.redraw();
-      }
-    }));
-
-  }
+  onupdate() {}
 
   onbeforeupdate() {
+    const list = $('.ConversationsList-list');
 
-    let list = $('.ConversationsList-list');
-
-    list.scroll(() => {
+    list.off('scroll').on('scroll', () => {
       if (list.scrollTop() + list.innerHeight() >= list[0].scrollHeight) {
-        this.loadMore()
+        this.loadMore();
       }
     });
   }
@@ -44,56 +34,73 @@ export default class ConversationsList extends Component {
     }
 
     if (this.currentConversation) {
-      this.conversationComponent = ConversationView.component({conversation: this.currentConversation, mobile: this.mobile});
+      this.conversationComponent = ConversationView.component({ conversation: this.currentConversation, mobile: this.mobile });
     }
 
     return (
       <div className="ConversationsList">
         <div style={app.session.user.conversations().length ? '' : 'width: unset; padding: 10px;'} className="container clearfix">
           <div style={this.mobile ? 'float: unset; margin: 0 auto; display: block;' : ''} className="people-list" id="people-list">
-            {Button.component({
-              onclick: this.showModal.bind(this),
-              className: 'Button Button--primary',
-              disabled: !app.forum.attribute('canMessage'),
-            }, app.forum.attribute('canMessage') ? app.translator.trans('kyrne-whisper.forum.chat.start') : app.translator.trans('kyrne-whisper.forum.chat.cant_start')
+            {Button.component(
+              {
+                onclick: this.showModal.bind(this),
+                className: 'Button Button--primary',
+                disabled: !app.forum.attribute('canMessage'),
+              },
+              app.forum.attribute('canMessage')
+                ? app.translator.trans('kyrne-whisper.forum.chat.start')
+                : app.translator.trans('kyrne-whisper.forum.chat.cant_start')
             )}
-            {app.session.user.conversations().length ?
-            <ul className="ConversationsList-list">
-              {conversations ? conversations.map((conversation, i) => {
-                return UserListItem.component({conversation, i, active: this.mobile ? false : this.currentConversation === conversation})
-              }) : ''}
-            </ul>
-              : ''}
+            {!!app.session.user.conversations().length && (
+              <ul className="ConversationsList-list">
+                {Array.isArray(conversations) &&
+                  conversations.map((conversation, i) => {
+                    return (
+                      <UserListItem
+                        conversation={conversation}
+                        i={i}
+                        active={this.mobile ? false : this.currentConversation === conversation}
+                        onclick={(e) => {
+                          if (this.mobile) {
+                            m.route(app.route('messages', { id: app.cache.conversations[$(e.currentTarget).attr('id')].id() }));
+                          } else {
+                            this.currentConversation = app.cache.conversations[$(e.currentTarget).attr('id')];
+                            m.redraw();
+                          }
+                        }}
+                      />
+                    );
+                  })}
+              </ul>
+            )}
           </div>
 
-          {!this.mobile ? this.conversationComponent : ''}
-
+          {!this.mobile && this.conversationComponent}
         </div>
       </div>
-
     );
   }
 
   showModal() {
     app.modal.show(StartConversationModal, {
       conversations: app.cache.conversations,
-      messages: app.cache.messages
-    })
+      messages: app.cache.messages,
+    });
   }
 
   loadMore() {
     this.loading = true;
     m.redraw();
 
-    app.store.find('whisper/conversations', {offset: app.cache.conversations.length})
-      .then(results => {
+    app.store
+      .find('whisper/conversations', { offset: app.cache.conversations.length })
+      .then((results) => {
         delete results.payload;
-        results.map(result => {
-          app.cache.conversations.push(result)
+        results.map((result) => {
+          app.cache.conversations.push(result);
         });
       })
-      .catch(() => {
-      })
+      .catch(() => {})
       .then(() => {
         this.loading = false;
         m.redraw();
@@ -112,13 +119,13 @@ export default class ConversationsList extends Component {
     this.loading = true;
     m.redraw();
 
-    app.store.find('whisper/conversations')
-      .then(results => {
+    app.store
+      .find('whisper/conversations')
+      .then((results) => {
         delete results.payload;
         app.cache.conversations = results;
       })
-      .catch(() => {
-      })
+      .catch(() => {})
       .then(() => {
         this.loading = false;
         m.redraw();

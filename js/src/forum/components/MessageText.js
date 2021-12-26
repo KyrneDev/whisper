@@ -1,4 +1,4 @@
-import Component from 'flarum/Component';
+import Component from 'flarum/common/Component';
 
 export default class MessageText extends Component {
   static initAttrs(attrs) {
@@ -15,10 +15,8 @@ export default class MessageText extends Component {
     super.oncreate(vnode);
 
     if (this.attrs.preview) {
-
       let preview;
       const updatePreview = () => {
-
         const content = this.attrs.content;
 
         if (preview === content) return;
